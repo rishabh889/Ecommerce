@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway  # Path to Dockerfile for API Gateway
+    ports:
+      - "8091:8091"
+
+  authentication-service:
+    build:
+      context: ./authentication-service  # Path to Dockerfile for Authentication Service
+    ports:
+      - "8088:8088"
+
+  order-service:
+    build:
+      context: ./order-service  # Path to Dockerfile for Order Service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/order_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: admin
+
+  product-service:
+    build:
+      context: ./product-service  # Path to Dockerfile for Product Service
+    ports:
+      - "8086:8086"
+
+  user-service:
+    build:
+      context: ./user-service  # Path to Dockerfile for User Service
+    ports:
+      - "8081:8081"
+
+  discovery-server:
+    build:
+      context: ./discovery-server  # Path to Dockerfile for Discovery Server
+    ports:
+      - "8761:8761"
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: order_db
+    ports:
+      - "3306:3306"
+
+networks:
+  default:
+    driver: bridge
